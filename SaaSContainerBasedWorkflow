@@ -1,0 +1,123 @@
+def gv
+def emailHandle
+def buildDir
+def stageDir
+def BUILD_AGENT='SAAS_di2inpun0050lv0_yytwint_build'
+def TEST_AGENT='SAAS_di2inpun0212lv0_yytwint_test'
+def STAGE_AGENT='SAAS_di2inpun0212lv0_yytwint_test'
+
+pipeline {
+    agent any
+	parameters {
+		string(name: 'NXRelease', defaultValue: 'nx2306.latest', description : 'Use the latest IP from NX2306 release to create the build.')
+		string(name: 'UnitPath', defaultValue: '/apps/JenkinsBase/units/Dev', description : 'Path where build unit for the run is to be created.')
+		string(name: 'StagePath', defaultValue: '/apps/JenkinsBase/stage/Dev', description : 'Path where translator worker kits are to be staged.')
+		booleanParam(name: 'Deploy', defaultValue: false, description : 'Deploy staging directory contents to customer setup')
+	}
+    stages {
+		stage ('init'){
+			steps {
+				script{
+					gv = load "ContainerBasedWorkflow.groovy"
+					emailHandle = load "email.groovy"
+					buildDir="${params.UnitPath}/${params.NXRelease}_TranslatorWorker_${BUILD_TIMESTAMP}"
+					stageDir="${params.StagePath}/${params.NXRelease}_TranslatorWorker_${BUILD_TIMESTAMP}"
+					NXReleaseVersion="${params.NXRelease}"
+				}
+			}
+		}
+		
+		stage('CreateUnit') {
+            agent { label "${BUILD_AGENT}" }
+            steps {
+				script{
+					gv.createUnit(buildDir) 
+				}					
+            }
+        }
+        stage('Build') {
+            agent { label "${BUILD_AGENT}" }
+            steps {
+				script{
+					gv.buildUnit(buildDir) 
+				}					
+            }
+        }
+		stage('Test') {
+            agent { label "${TEST_AGENT}" }
+            steps {
+				script{
+					gv.TestUnit(buildDir) 
+				}					
+            }
+        }
+		stage('StageForContainer') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+				script{
+					gv.StageForContainer(buildDir,stageDir) 
+				}					
+            }
+        }
+		stage('CheckLicenseServer') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+				script{
+					gv.CheckLicenseServer() 
+				}					
+            }
+        }
+		stage('BuildAndRunDocker') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+				script{
+					gv.BuildAndRunDocker(buildDir,stageDir) 
+				}					
+            }
+        }
+		stage('DockerCleanup') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+				script{
+					gv.DockerCleanup(stageDir) 
+				}					
+            }
+        }
+		stage('DeployContainer') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+				script{
+					gv.DeployContainer(stageDir) 
+				}					
+            }
+        }
+		stage('Purge Unit') {
+			agent { label "${BUILD_AGENT}" }
+            steps {
+				script{
+					gv.Purge("${params.UnitPath}") 
+				}					
+            }
+		}
+		stage('Purge Stage') {
+			agent { label "${STAGE_AGENT}" }
+            steps {
+				script{
+					gv.Purge("${params.StagePath}") 
+				}					
+            }
+		}
+    }
+
+    post {
+		
+        success {
+            echo 'All tasks completed successfully.'
+        }
+		failure {
+			echo 'One or more stages have failed.'
+		}
+		
+		
+    }
+}
