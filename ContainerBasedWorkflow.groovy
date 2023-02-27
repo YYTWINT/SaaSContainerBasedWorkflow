@@ -13,8 +13,8 @@ def BuildUnit(String buildDir)
 	echo "Executing BuildUnit..."
 	script{		
 		def unitFullPath="${buildDir}"
-		sh "chmod +x ./shellScripts/buildTranslatorWorkerUnit.sh "
-		sh "./shellScripts/buildTranslatorWorkerUnit.sh ${unitFullPath}"		
+		sh "chmod +x ./shellScripts/BuildUnit.sh "
+		sh "./shellScripts/BuildUnit.sh ${unitFullPath}"		
 	}
 }
 
