@@ -2,9 +2,9 @@
 
 if [ $# -ne 2 ] 
 then
-	echo "buildDockerImage.sh called with incorrect number of arguments."
-	echo "buildDockerImage.sh <UnitPath> <StagePath> "
-	echo "For example; buildDockerImage.sh /plm/pnnas/ppic/users/<unit path> /plm/pnnas/ppic/users/<staging path>"
+	echo "BuildAndRunDocker.sh called with incorrect number of arguments."
+	echo "BuildAndRunDocker.sh <UnitPath> <StagePath> "
+	echo "For example; BuildAndRunDocker.sh /plm/pnnas/ppic/users/<unit path> /plm/pnnas/ppic/users/<staging path>"
 	exit 1
 fi
 
@@ -16,9 +16,6 @@ INIT_DEF_FILE=${UNIT_PATH}/init.def
 echo "INIT_DEF_FILE = $INIT_DEF_FILE"
 stringarray=(`grep DMS_PARENT_BASELINE ${INIT_DEF_FILE} || { exit 1;}`)
 NX_RELEASE=${stringarray[1]}
-
-# Dont remove all docker images - we want to preserve docker image for license server
-#docker rm -v -f $(docker ps -qa)
 	
 docker build -t trx22:$NX_RELEASE $STAGE_DIR -f $STAGE_DIR/dockerfile || { exit 1;} 
 

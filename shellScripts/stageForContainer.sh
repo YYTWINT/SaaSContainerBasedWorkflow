@@ -2,13 +2,11 @@
 
 if [ $# -ne 3 ]
 then
-        echo "stageForContainer.sh called with incorrect number of arguments."
-        echo "stageForContainer.sh <unitPaht> <StageBaseDir> <CustomerArtifactDir>"
-        echo "For example; stageForContainer.sh /plm/pnnas/ppic/users/<unit_name> /plm/pnnas/ppic/users/<stage_dir> <Artifacts>"
+        echo "StageForContainer.sh called with incorrect number of arguments."
+        echo "StageForContainer.sh <unitPaht> <StageBaseDir> <CustomerArtifactDir>"
+        echo "For example; StageForContainer.sh /plm/pnnas/ppic/users/<unit_name> /plm/pnnas/ppic/users/<stage_dir> <Artifacts>"
         exit 1
 fi
-
-echo "Executing stageForContainer.sh..."
 
 UNIT_PATH=$1
 STAGE_BASE_DIR=$2
@@ -48,7 +46,7 @@ chmod 0755 ${RUN_UGTOPV_MULTICAD} || { exit 1;}
 chmod 0755 ${RUN_UGTOPV_VIS} || { exit 1;}
 
 
-echo "ENV SPLM_LICENSE_SERVER=29000@10.146.116.128" >> ${STAGE_DIR}/dockerfile
+echo "ENV SPLM_LICENSE_SERVER=29000@172.17.0.2" >> ${STAGE_DIR}/dockerfile
 echo " " >> ${STAGE_DIR}/dockerfile
 
 echo "COPY run_ugtopv_vis         /app/run_ugtopv_vis" >> ${STAGE_DIR}/dockerfile

@@ -1,16 +1,16 @@
-def createUnit(String buildDir)
+def CreateUnit(String buildDir)
 {
-	echo "Creating unit..."
+	echo "Executing CreateUnit..."
 	script{		
 		def unitFullPath="${buildDir}"
-		sh "chmod +x ./shellScripts/createTranslatorWorkerUnit.sh "
-		sh "./shellScripts/createTranslatorWorkerUnit.sh ${params.NXRelease} ${unitFullPath}"		
+		sh "chmod +x ./shellScripts/CreateUnit.sh "
+		sh "./shellScripts/CreateUnit.sh ${params.NXRelease} ${unitFullPath}"		
 	}
 }
 
-def buildUnit(String buildDir)
+def BuildUnit(String buildDir)
 {
-	echo "Building unit..."
+	echo "Executing BuildUnit..."
 	script{		
 		def unitFullPath="${buildDir}"
 		sh "chmod +x ./shellScripts/buildTranslatorWorkerUnit.sh "
@@ -20,23 +20,23 @@ def buildUnit(String buildDir)
 
 def TestUnit(String buildDir)
 {
-	echo "Executing devtests..."
+	echo "Executing TestUnit..."
 	script{		
 		def unitFullPath="${buildDir}"
-		sh "chmod +x ./shellScripts/executeTranslatorWorkerTest.sh "
-		sh "./shellScripts/executeTranslatorWorkerTest.sh ${unitFullPath}"		
+		sh "chmod +x ./shellScripts/TestUnit.sh "
+		sh "./shellScripts/TestUnit.sh ${unitFullPath}"		
 	}
 }
 
 def StageForContainer(String buildDir, String stageDir)
 {
-	echo "Executing stage and deploy..."
+	echo "Executing StageForContainer..."
 	script{		
 		def unitFullPath="${buildDir}"
 		def stagePath="${stageDir}"
 		
-		sh "chmod +x ./shellScripts/stageForContainer.sh "
-		sh "./shellScripts/stageForContainer.sh ${unitFullPath} ${stagePath} 'Artifacts' "		
+		sh "chmod +x ./shellScripts/StageForContainer.sh "
+		sh "./shellScripts/StageForContainer.sh ${unitFullPath} ${stagePath} 'Artifacts' "		
 	}
 }
 
@@ -49,26 +49,35 @@ def CheckLicenseServer()
 	}
 }
 
+def RemoveRunningContainers()
+{
+	echo "Executing RemoveRunningContainers..."
+	script{
+		sh "chmod +x ./shellScripts/RemoveRunningContainers.sh "
+		sh "./shellScripts/RemoveRunningContainers.sh"		
+	}
+}
+
 def BuildAndRunDocker(String buildDir, String stageDir)
 {
-	echo "Executing Build and Run docker script..."
+	echo "Executing BuildAndRunDocker..."
 	script{		
 		def unitFullPath="${buildDir}"
 		def stagePath="${stageDir}"
 		
-		sh "chmod +x ./shellScripts/buildAndRunDockerImage.sh "
-		sh "./shellScripts/buildAndRunDockerImage.sh ${unitFullPath} ${stagePath}"		
+		sh "chmod +x ./shellScripts/BuildAndRunDocker.sh "
+		sh "./shellScripts/BuildAndRunDocker.sh ${unitFullPath} ${stagePath}"		
 	}
 }
 
 def DockerCleanup(String stageDir)
 {
-	echo "Executing Docker cleanup script..."
+	echo "Executing DockerCleanup..."
 	script{		
 		def stagePath="${stageDir}"
 		
-		sh "chmod +x ./shellScripts/cleanDocker.sh "
-		sh "./shellScripts/cleanDocker.sh ${stagePath}"		
+		sh "chmod +x ./shellScripts/DockerCleanup.sh "
+		sh "./shellScripts/DockerCleanup.sh ${stagePath}"		
 	}
 }
 
@@ -80,8 +89,8 @@ def DeployContainer(String stageDir)
 		def deployFlag="${params.Deploy}"
 		def unitFullPath="${buildDir}"
 		
-		sh "chmod +x ./shellScripts/deployContainer.sh "
-		sh "./shellScripts/deployContainer.sh ${stagePath} ${deployFlag} ${unitFullPath}"		
+		sh "chmod +x ./shellScripts/DeployContainer.sh "
+		sh "./shellScripts/DeployContainer.sh ${stagePath} ${deployFlag} ${unitFullPath}"		
 	}
 }
 

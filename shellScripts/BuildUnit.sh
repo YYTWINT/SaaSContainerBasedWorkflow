@@ -2,9 +2,9 @@
 
 if [ $# -ne 1 ] 
 then
-	echo "buildTranslatorWorkerUnit.sh called with incorrect number of arguments."
-	echo "buildTranslatorWorkerUnit.sh <UnitPath>"
-	echo "For example; buildTranslatorWorkerUnit.sh /plm/pnnas/ppic/users/<unit_name>"
+	echo "BuildUnit.sh called with incorrect number of arguments."
+	echo "BuildUnit.sh <UnitPath>"
+	echo "For example; BuildUnit.sh /plm/pnnas/ppic/users/<unit_name>"
 	exit 1
 fi
 

@@ -2,13 +2,11 @@
 
 if [ $# -ne 3 ]
 then
-        echo "deployContainer.sh called with incorrect number of arguments."
-        echo "deployContainer.sh <StageBaseDir> <DeployFlag> <unitPath>"
-        echo "For example; deployContainer.sh /plm/pnnas/ppic/users/<stage_dir> true/false /plm/pnnas/ppic/users/<unit_dir>"
+        echo "DeployContainer.sh called with incorrect number of arguments."
+        echo "DeployContainer.sh <StageBaseDir> <DeployFlag> <unitPath>"
+        echo "For example; DeployContainer.sh /plm/pnnas/ppic/users/<stage_dir> true/false /plm/pnnas/ppic/users/<unit_dir>"
         exit 1
 fi
-
-echo "Executing deployContainer.sh..."
 
 STAGE_BASE_DIR=$1
 EXECUTE_DEPLOY=$2
