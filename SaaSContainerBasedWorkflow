@@ -107,7 +107,7 @@ pipeline {
 			agent { label "${STAGE_AGENT}" }
 			steps {
 				script{
-					gv.DeployContainer(stageDir) 
+					gv.DeployContainer(buildDir,stageDir) 
 				}					
 			}
 		}			
@@ -136,14 +136,7 @@ pipeline {
         }
 		failure {
 			echo 'One or more stages have failed.'
-		}
-		always
-		{
-			agent { label "${STAGE_AGENT}" }
-			script{
-				gv.RemoveRunningContainers() 
-			}
-		}
+		}	
 		
     }
 }

@@ -80,7 +80,7 @@ def DockerCleanup(String stageDir)
 	}
 }
 
-def DeployContainer(String stageDir)
+def DeployContainer(String buildDir,String stageDir)
 {
 	echo "Executing DeployContainer..."
 	script{		

@@ -4,6 +4,7 @@
 
 for containerId in `docker ps -a | grep -v "saltd_container" | awk 'NR>1 {print $1}'`
 do
+	echo "Removing container with ID $containerId"
 	docker rm -v -f $containerId
 done
 
