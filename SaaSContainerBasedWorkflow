@@ -91,22 +91,7 @@ pipeline {
 				}					
             }
         }
-		stage('RemoveRunningContainers-Post') {
-            agent { label "${STAGE_AGENT}" }
-            steps {
-				script{
-					gv.RemoveRunningContainers() 
-				}					
-            }
-        }
-		stage('DeployContainer') {
-            agent { label "${STAGE_AGENT}" }
-            steps {
-				script{
-					gv.DeployContainer(stageDir) 
-				}					
-            }
-        }
+		
 		stage('Purge Unit') {
 			agent { label "${BUILD_AGENT}" }
             steps {
@@ -133,7 +118,25 @@ pipeline {
 		failure {
 			echo 'One or more stages have failed.'
 		}
-		
+		always
+		{
+			stage('RemoveRunningContainers-Post') {
+				agent { label "${STAGE_AGENT}" }
+				steps {
+					script{
+						gv.RemoveRunningContainers() 
+					}					
+				}
+			}
+			stage('DeployContainer') {
+				agent { label "${STAGE_AGENT}" }
+				steps {
+					script{
+						gv.DeployContainer(stageDir) 
+					}					
+				}
+			}
+		}
 		
     }
 }
