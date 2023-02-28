@@ -8,6 +8,8 @@ do
 	docker rm -v -f $containerId
 done
 
+docker rmi -f $(docker images -f dangling=true -q)
+
 docker image prune -a --force
 
 exit 0
