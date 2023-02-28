@@ -117,7 +117,7 @@ pipeline {
 			agent { label "${BUILD_AGENT}" }	
 			steps {
 				script{
-					if( buildResult != 'FAILURE' ) {
+					if( ${currentBuild.buildResult} != 'FAILURE' ) {
 						gv.Purge("${params.UnitPath}") 
 					}
 					else {
@@ -131,7 +131,7 @@ pipeline {
 			agent { label "${STAGE_AGENT}" }	
 			steps {
 				script{
-					if( buildResult != 'FAILURE') {
+					if( ${currentBuild.buildResult} != 'FAILURE') {
 						gv.Purge("${params.StagePath}") 
 					}
 					else {
