@@ -98,8 +98,8 @@ def Purge(String dirName)
 	echo "Executing Purge ..."
 	script{		
 		def fullPath="${dirName}"
-		sh "chmod +x ./shellScripts/purge.sh "
-		sh "./shellScripts/purge.sh ${fullPath}"		
+		sh "chmod +x ./shellScripts/Purge.sh "
+		sh "./shellScripts/Purge.sh ${fullPath}"		
 	}
 }
 
