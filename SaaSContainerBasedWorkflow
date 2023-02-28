@@ -90,8 +90,23 @@ pipeline {
 					gv.DockerCleanup(stageDir) 
 				}					
             }
-        }
-		
+        }		
+		stage('RemoveRunningContainers-Post') {
+			agent { label "${STAGE_AGENT}" }
+			steps {
+				script{
+					gv.RemoveRunningContainers() 
+				}					
+			}
+		}
+		stage('DeployContainer') {
+			agent { label "${STAGE_AGENT}" }
+			steps {
+				script{
+					gv.DeployContainer(stageDir) 
+				}					
+			}
+		}			
 		stage('Purge Unit') {
 			agent { label "${BUILD_AGENT}" }
             steps {
@@ -120,21 +135,11 @@ pipeline {
 		}
 		always
 		{
-			stage('RemoveRunningContainers-Post') {
-				agent { label "${STAGE_AGENT}" }
-				steps {
-					script{
-						gv.RemoveRunningContainers() 
-					}					
-				}
-			}
-			stage('DeployContainer') {
-				agent { label "${STAGE_AGENT}" }
-				steps {
-					script{
-						gv.DeployContainer(stageDir) 
-					}					
-				}
+			agent { label "${STAGE_AGENT}" }
+			steps {
+				script{
+					gv.RemoveRunningContainers() 
+				}					
 			}
 		}
 		
