@@ -8,4 +8,6 @@ do
 	docker rm -v -f $containerId
 done
 
+docker image prune -a --force
+
 exit 0
