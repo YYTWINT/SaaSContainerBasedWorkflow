@@ -24,18 +24,102 @@ pipeline {
 					buildDir="${params.UnitPath}/${params.NXRelease}_TranslatorWorker_${BUILD_TIMESTAMP}"
 					stageDir="${params.StagePath}/${params.NXRelease}_TranslatorWorker_${BUILD_TIMESTAMP}"
 					NXReleaseVersion="${params.NXRelease}"
-					anyFailure = true
 				}
 			}
 		}
 		
-		
-        		
+		stage('CreateUnit') {
+            agent { label "${BUILD_AGENT}" }
+            steps {
+				script{
+					gv.CreateUnit(buildDir) 
+				}					
+            }
+        }
+        stage('BuildUnit') {
+            agent { label "${BUILD_AGENT}" }
+            steps {
+				script{
+					gv.BuildUnit(buildDir) 
+				}					
+            }
+        }
+		stage('TestUnit') {
+            agent { label "${TEST_AGENT}" }
+            steps {
+				script{
+					gv.TestUnit(buildDir) 
+				}					
+            }
+        }
+		stage('StageForContainer') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+				script{
+					gv.StageForContainer(buildDir,stageDir) 
+				}					
+            }
+        }
+		stage('CheckLicenseServer') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+				script{
+					gv.CheckLicenseServer() 
+				}					
+            }
+        }
+		stage('RemoveRunningContainers-Pre') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+				script{
+					gv.RemoveRunningContainers() 
+				}					
+            }
+        }
+		stage('BuildAndRunDocker') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+					catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+					script{
+						gv.BuildAndRunDocker(buildDir,stageDir) 
+						anyFailure = true
+					}
+					
+				}					
+            }
+        }
+		stage('DockerCleanup') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+					catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+					script{
+						gv.DockerCleanup(stageDir) 
+					}
+				}				
+            }
+        }		
+		stage('RemoveRunningContainers-Post') {
+			agent { label "${STAGE_AGENT}" }
+			steps {
+				script{
+					gv.RemoveRunningContainers() 
+				}					
+			}
+		}
+		stage('DeployContainer') {
+			agent { label "${STAGE_AGENT}" }
+			steps {
+				script{
+					gv.DeployContainer(buildDir,stageDir) 
+				}					
+			}
+		}			
+				
 		stage('Purge Unit') {
 			agent { label "${BUILD_AGENT}" }	
 			steps {
 				script{
-					if(anyFailure == false ) {
+					if( anyFailure == false ) {
 						gv.Purge("${params.UnitPath}") 
 					}
 					else {
@@ -49,7 +133,7 @@ pipeline {
 			agent { label "${STAGE_AGENT}" }	
 			steps {
 				script{
-					if( anyFailure == false) {
+					if( anyFailure == false ) {
 						gv.Purge("${params.StagePath}") 
 					}
 					else {
