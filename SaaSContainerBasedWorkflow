@@ -115,29 +115,30 @@ pipeline {
 		}			
 				
 		stage('Purge Unit') {
-			agent { label "${BUILD_AGENT}" }
-			if( anyFailure == false ){
-				steps {
-					script{
-							gv.Purge("${params.UnitPath}") 
-						}					
-					}			
-            }
-			else {
-				echo "Skipping Purge Unit due to earlier failure"
+			agent { label "${BUILD_AGENT}" }	
+			steps {
+				script{
+					if( anyFailure == false ) {
+						gv.Purge("${params.UnitPath}") 
+					}
+					else {
+						echo "Skipping Purge Unit due to earlier failure"
+					}
+				}					
 			}
 		}
+
 		stage('Purge Stage') {
-			agent { label "${STAGE_AGENT}" }
-			if( anyFailure == false ){
-				steps {
-					script{
-							gv.Purge("${params.StagePath}") 
-						}					
+			agent { label "${STAGE_AGENT}" }	
+			steps {
+				script{
+					if( anyFailure == false ) {
+						gv.Purge("${params.StagePath}") 
 					}
-            }
-			else {
-				echo "Skipping Purge Stage due to earlier failure"
+					else {
+						echo "Skipping Purge Stage due to earlier failure"
+					}
+				}					
 			}
 		}
     }
