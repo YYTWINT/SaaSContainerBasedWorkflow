@@ -28,14 +28,7 @@ pipeline {
 			}
 		}
 		
-		stage('CreateUnit') {
-            agent { label "${BUILD_AGENT}" }
-            steps {
-				script{
-					gv.CreateUnit(buildDir) 
-				}					
-            }
-        }
+		
         		
 		stage('Purge Unit') {
 			agent { label "${BUILD_AGENT}" }	
