@@ -27,7 +27,7 @@ pipeline {
 			}
 		}
 		
-		stage('CreateUnit') {
+		/*stage('CreateUnit') {
             agent { label "${BUILD_AGENT}" }
             steps {
 				script{
@@ -122,7 +122,7 @@ pipeline {
 					gv.Purge("${params.StagePath}") 
 				}					
             }
-		}
+		}*/
     }
 
     post {
@@ -135,11 +135,10 @@ pipeline {
 		}
 		always
 		{
+			echo 'In always.'
 			agent { label "${STAGE_AGENT}" }
-			steps {
-				script{
-					gv.RemoveRunningContainers() 
-				}					
+			script{
+				gv.RemoveRunningContainers() 
 			}
 		}
 		
