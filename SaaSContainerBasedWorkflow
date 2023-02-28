@@ -5,6 +5,7 @@ def stageDir
 def BUILD_AGENT='SAAS_di2inpun0050lv0_yytwint_build'
 def TEST_AGENT='SAAS_di2inpun0212lv0_yytwint_test'
 def STAGE_AGENT='SAAS_di2inpun0212lv0_yytwint_test'
+def boolean anyFailure = false
 
 pipeline {
     agent any
@@ -82,6 +83,7 @@ pipeline {
 					script{
 						gv.BuildAndRunDocker(buildDir,stageDir) 
 					}
+					anyFailure = true
 				}					
             }
         }
@@ -115,7 +117,12 @@ pipeline {
 			agent { label "${BUILD_AGENT}" }
             steps {
 				script{
-					gv.Purge("${params.UnitPath}") 
+					if( anyFailure == false ) {
+						gv.Purge("${params.UnitPath}") 
+					}
+					else {
+						echo "Skipping Purge Unit due to earlier failure"
+					}
 				}					
             }
 		}
@@ -123,7 +130,12 @@ pipeline {
 			agent { label "${STAGE_AGENT}" }
             steps {
 				script{
-					gv.Purge("${params.StagePath}") 
+					if( anyFailure == false ) {
+						gv.Purge("${params.StagePath}") 
+					}
+					else {
+						echo "Skipping Purge Stage due to earlier failure"
+					}
 				}					
             }
 		}
