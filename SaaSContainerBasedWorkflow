@@ -79,7 +79,7 @@ pipeline {
 		stage('BuildAndRunDocker') {
             agent { label "${STAGE_AGENT}" }
             steps {
-					catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', anyFailure: true) {
+					catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
 					script{
 						gv.BuildAndRunDocker(buildDir,stageDir)
 					}					
@@ -117,7 +117,7 @@ pipeline {
 			agent { label "${BUILD_AGENT}" }	
 			steps {
 				script{
-					if( anyFailure == false ) {
+					if( buildResult != 'FAILURE' ) {
 						gv.Purge("${params.UnitPath}") 
 					}
 					else {
@@ -131,7 +131,7 @@ pipeline {
 			agent { label "${STAGE_AGENT}" }	
 			steps {
 				script{
-					if( anyFailure == false ) {
+					if( buildResult != 'FAILURE') {
 						gv.Purge("${params.StagePath}") 
 					}
 					else {
