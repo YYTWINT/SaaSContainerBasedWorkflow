@@ -82,8 +82,8 @@ pipeline {
 					catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
 					script{
 						gv.BuildAndRunDocker(buildDir,stageDir) 
-					}
-					anyFailure = true
+						anyFailure = true
+					}					
 				}					
             }
         }
