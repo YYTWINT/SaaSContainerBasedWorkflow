@@ -86,8 +86,8 @@ pipeline {
 					catch (Exception e) {
 						echo 'Exception occurred: ' + e.toString()
 						anyFailure = true
-						buildResult = 'FAILURE'
-						stageResult = 'FAILURE'
+						currentBuild.result = 'FAILURE'
+						currentBuild.buildResult = 'FAILURE'
 					}
 				}			
             }
