@@ -78,14 +78,16 @@ pipeline {
         }
 		stage('BuildAndRunDocker') {
             agent { label "${STAGE_AGENT}" }
-            steps {
-					catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-					script{
+            steps {					
+				script{
+					try{
 						gv.BuildAndRunDocker(buildDir,stageDir) 
+					}
+					catch (Exception e) {
+						echo 'Exception occurred: ' + e.toString()
 						anyFailure = true
 					}
-					
-				}					
+				}			
             }
         }
 		stage('DockerCleanup') {
