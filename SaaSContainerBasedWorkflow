@@ -86,8 +86,6 @@ pipeline {
 					catch (Exception e) {
 						echo 'Exception occurred: ' + e.toString()
 						anyFailure = true
-						currentBuild.result = 'FAILURE'
-						currentBuild.buildResult = 'FAILURE'
 					}
 				}			
             }
@@ -144,6 +142,17 @@ pipeline {
 						echo "Skipping Purge Stage due to earlier failure"
 					}
 				}					
+			}
+		}
+		
+		stage('Evaluate Status') {
+			steps{
+				script {
+					if( anyFailure == true ) {
+						currentBuild.result = 'FAILURE'
+						currentBuild.buildResult = 'FAILURE'
+					}
+				}
 			}
 		}
     }
