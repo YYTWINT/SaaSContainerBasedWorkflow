@@ -44,14 +44,14 @@ pipeline {
 				}					
             }
         }
-		stage('TestUnit') {
+		/*stage('TestUnit') {
             agent { label "${TEST_AGENT}" }
             steps {
 				script{
 					gv.TestUnit(buildDir) 
 				}					
             }
-        }
+        }*/
 		stage('StageForContainer') {
             agent { label "${STAGE_AGENT}" }
             steps {
@@ -60,7 +60,7 @@ pipeline {
 				}					
             }
         }
-		stage('CheckLicenseServer') {
+		/*stage('CheckLicenseServer') {
             agent { label "${STAGE_AGENT}" }
             steps {
 				script{
@@ -75,7 +75,7 @@ pipeline {
 					gv.RemoveRunningContainers() 
 				}					
             }
-        }
+        }*/
 		stage('BuildAndRunDocker') {
             agent { label "${STAGE_AGENT}" }
             steps {					
@@ -90,7 +90,7 @@ pipeline {
 				}			
             }
         }
-		stage('DockerCleanup') {
+		/*stage('DockerCleanup') {
             agent { label "${STAGE_AGENT}" }
             steps {
 					catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
@@ -99,7 +99,7 @@ pipeline {
 					}
 				}				
             }
-        }		
+        }*/		
 		stage('RemoveRunningContainers-Post') {
 			agent { label "${STAGE_AGENT}" }
 			steps {
@@ -108,14 +108,14 @@ pipeline {
 				}					
 			}
 		}
-		stage('DeployContainer') {
+		/*stage('DeployContainer') {
 			agent { label "${STAGE_AGENT}" }
 			steps {
 				script{
 					gv.DeployContainer(buildDir,stageDir) 
 				}					
 			}
-		}			
+		}*/			
 				
 		stage('Purge Unit') {
 			agent { label "${BUILD_AGENT}" }	

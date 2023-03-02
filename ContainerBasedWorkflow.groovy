@@ -24,6 +24,7 @@ def TestUnit(String buildDir)
 	script{		
 		def unitFullPath="${buildDir}"
 		sh "chmod +x ./shellScripts/TestUnit.sh "
+		sh "./shellScripts/TestUnit.sh ${unitFullPath}"	
 	}
 }
 
