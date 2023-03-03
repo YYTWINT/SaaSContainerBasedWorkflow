@@ -166,7 +166,9 @@ pipeline {
 			echo 'One or more stages have failed.'
 		}	
 		always{
-			emailHandle.sendEmail(buildDir,stageDir)
+			script{
+				emailHandle.sendEmail(buildDir,stageDir)
+			}
 		}
     }
 }
