@@ -22,12 +22,36 @@ docker build -t trx22:$NX_RELEASE $STAGE_DIR -f $STAGE_DIR/dockerfile || { exit 
 docker run --name nxjt_testrun_container -v /apps/JenkinsBase/docker:/volume --cpus="1" --memory="2g" trx22:$NX_RELEASE
 
 #Now check for error in /volume/Logs/log.txt file
-LOG_FILE=/apps/JenkinsBase/docker/Logs/log.txt
+LOG_FILE=/apps/JenkinsBase/docker/Logs/log_pass.txt
 errorCount=0
+
+echo "Checking case for pass condition"
 
 if [ -f $LOG_FILE ] 
 then
 	for failingCase in `grep ":1" $LOG_FILE | cut -d : -f 1`
+	do
+		echo "Docker test run failed for part : $failingCase"
+		((errorCount++))
+	done
+	
+	if [ $errorCount -ne 0 ]
+	then
+		echo "Number of tests failed for Docker test = $errorCount. Exiting with error."
+		exit 1
+	fi
+else
+	echo "Could not find log file $LOG_FILE"
+	exit 1
+fi
+
+LOG_FILE=/apps/JenkinsBase/docker/Logs/log_fail.txt
+errorCount=0
+
+echo "Checking case for fail condition"
+if [ -f $LOG_FILE ] 
+then
+	for failingCase in `grep ":0" $LOG_FILE | cut -d : -f 1`
 	do
 		echo "Docker test run failed for part : $failingCase"
 		((errorCount++))
