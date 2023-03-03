@@ -1,4 +1,4 @@
-def sendSuccessEmail(String buildDir, String stageDir)
+def sendEmail(String buildDir, String stageDir)
 {
 	def CPNum = "NA";
 	if (params.CPNumber != null){
