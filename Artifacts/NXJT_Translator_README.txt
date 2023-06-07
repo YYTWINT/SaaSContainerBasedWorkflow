@@ -1,5 +1,5 @@
 NXJT Translator - v2306 Pre-Release version
-MAY 5, 2023
+JUN 07, 2023
 ==========================================
 
 SECTION 1 - Release Information
@@ -16,7 +16,7 @@ SECTION 5 - Support
 
 SECTION 1 - Release Information
 
-This translator is based on NX2306 Phase 1600 binaries and doesn't contain any new functionality other than just supporting NX files created in NX2306.
+This translator is based on NX2306 Phase 1700 binaries and doesn't contain any new functionality other than just supporting NX files created in NX2306.
 This translator should be used for internal testing purpose only and not to be used in production environment.
  
 NX to JT translator produces JT files for input part or assembly files.The translator is invoked
@@ -51,7 +51,7 @@ SECTION 2 - Platforms and OS Supported
 
 LINUX:
 
-	- CentOS Linux release 7.6.1810 (Core)
+	- CentOS Linux release 7.x
 
 -------------------------------------------------------------------------
 
