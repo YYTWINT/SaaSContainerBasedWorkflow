@@ -1,5 +1,5 @@
-NXJT Translator - v2206 Pre-Release version
-May 23, 2022
+NXJT Translator - v2306 Pre-Release version
+MAY 5, 2023
 ==========================================
 
 SECTION 1 - Release Information
@@ -15,6 +15,9 @@ SECTION 5 - Support
 -------------------------------------------------------------------------
 
 SECTION 1 - Release Information
+
+This translator is based on NX2306 Phase 1600 binaries and doesn't contain any new functionality other than just supporting NX files created in NX2306.
+This translator should be used for internal testing purpose only and not to be used in production environment.
  
 NX to JT translator produces JT files for input part or assembly files.The translator is invoked
 through Linux console.User can provide single part that may be a piece part or assembly for translator 
@@ -57,6 +60,7 @@ SECTION 3 - Installation Instructions and Usage
 	- Following Linux packages are prerequisites to run translator binaries -
 			fontconfig 
 			ksh
+			libgomp
 			  
 	- Set following environment variables -
 			UGII_BASE_DIR=.../app                  ---> This is base directory containing translator binaries.
@@ -64,7 +68,7 @@ SECTION 3 - Installation Instructions and Usage
 		
 	- Sample docker file 
 			FROM centos:7
-			RUN yum update --assumeyes --skip-broken && yum install --assumeyes fontconfig ksh && yum clean all
+			RUN yum update --assumeyes --skip-broken && yum install --assumeyes fontconfig ksh libgomp && yum clean all
 			WORKDIR /app
 			COPY nxbin/     /app/nxbin
 			COPY pvtrans/   /app/pvtrans
@@ -75,6 +79,9 @@ SECTION 3 - Installation Instructions and Usage
 			COPY diagramming/   /app/diagramming
 			COPY xlatorworker/  /app/xlatorworker
 			COPY vdv/           /app/vdv
+			COPY nx_vsa/   /app/nx_vsa
+			COPY nxjoin/   /app/nxjoin
+			COPY nxcoatings/   /app/nxcoatings
 
 			COPY run_ugtopv_vis         /app/run_ugtopv_vis
 			COPY tessUG_vis.config      /app/tessUG_vis.config
@@ -82,7 +89,7 @@ SECTION 3 - Installation Instructions and Usage
 			COPY tessUG_multicad.config      /app/tessUG_multicad.config
 
 			ENV UGII_BASE_DIR=/app
-			ENV SPLM_LICENSE_SERVER=28000@<License server>
+			ENV SPLM_LICENSE_SERVER=29000@<License server>
 			
 	- 3.1 Translator for visualization workflows
  			This translator usage is for applications which use JT files in visualization workflows. E.g. Xcelerator Share.
@@ -106,14 +113,22 @@ SECTION 3 - Installation Instructions and Usage
 
 SECTION 4 - Licensing
  
-	- Please download the latest license server and development license file compatible with NX2206
-	  from https://license/lws/#licenses:main
+	- NX 2306 requires Siemens License Server version 2.1 or later.Please download the license server from -
+ 			https://support.sw.siemens.com/en-US/product/1586485382/downloads
+	- If you already configred Siemens License Server version 2.1 or later, you can use same License Server setup for this release.
+ 
+	- Please download the development license file compatible with NX2306.
+	  from https://license/lws/#licenses:main. You need to provide host ID of a license server to get a license file.
 	
-	- You need to provide host ID of a license server to get a license file.
+	- Starting in NX 2212, the license you receive from Siemens must be installed using the Siemens License Server installer	  
+	
+	- During installation, the Siemens License Server installer defaults to port number 29000, which was 28000 in previous releases. 
+	  You can change the port number while running the installer. 
+	  The port number value is used in the value for the SPLM_LICENSE_SERVER environment variable.
 	
 	- After license server and license file is configured, please specify SPLM_LICENSE_SERVER
-	  variable in run_ugtopv translator launch script as 
-			SPLM_LICENSE_SERVER=28000@<license server>
+	  variable in run_ugtopv_vis or run_ugtopv_multicad translator launch script as 
+			SPLM_LICENSE_SERVER=29000@<license server>
 	  
 -------------------------------------------------------------------------
 
