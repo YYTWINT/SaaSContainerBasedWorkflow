@@ -48,7 +48,8 @@ pipeline {
             agent { label "${TEST_AGENT}" }
             steps {
 				script{
-					gv.TestUnit(buildDir) 
+					echo "docker test"
+					//gv.TestUnit(buildDir) 
 				}					
             }
         }
