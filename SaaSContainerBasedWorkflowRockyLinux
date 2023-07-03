@@ -82,7 +82,7 @@ pipeline {
             steps {					
 				script{
 					try{
-						gv.BuildAndRunDocker(buildDir,stageDir) 
+						gv.BuildAndRunDockerRockyLinux(buildDir,stageDir) 
 					}
 					catch (Exception e) {
 						echo 'Exception occurred: ' + e.toString()

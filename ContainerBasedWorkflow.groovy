@@ -70,6 +70,18 @@ def BuildAndRunDocker(String buildDir, String stageDir)
 	}
 }
 
+def BuildAndRunDockerRockyLinux(String buildDir, String stageDir)
+{
+	echo "Executing BuildAndRunDocker..."
+	script{		
+		def unitFullPath="${buildDir}"
+		def stagePath="${stageDir}"
+		
+		sh "chmod +x ./shellScripts/BuildAndRunDockerRockyLinux.sh "
+		sh "./shellScripts/BuildAndRunDockerRockyLinux.sh ${unitFullPath} ${stagePath}"		
+	}
+}
+
 def DockerCleanup(String stageDir)
 {
 	echo "Executing DockerCleanup..."
