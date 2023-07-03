@@ -57,7 +57,7 @@ pipeline {
             agent { label "${STAGE_AGENT}" }
             steps {
 				script{
-					gv.StageForContainer(buildDir,stageDir) 
+					gv.StageForContainerRockyLinux(buildDir,stageDir) 
 				}					
             }
         }

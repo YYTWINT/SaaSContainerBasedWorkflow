@@ -40,6 +40,18 @@ def StageForContainer(String buildDir, String stageDir)
 	}
 }
 
+def StageForContainerRockyLinux(String buildDir, String stageDir)
+{
+	echo "Executing StageForContainer..."
+	script{		
+		def unitFullPath="${buildDir}"
+		def stagePath="${stageDir}"
+		
+		sh "chmod +x ./shellScripts/StageForContainerRockyLinux.sh "
+		sh "./shellScripts/StageForContainerRockyLinux.sh ${unitFullPath} ${stagePath} 'Artifacts' "		
+	}
+}
+
 def CheckLicenseServer()
 {
 	echo "Executing CheckLicenseServer..."
