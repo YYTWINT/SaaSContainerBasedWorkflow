@@ -78,7 +78,7 @@ pipeline {
 				}
             steps {
 				script{
-					gv.StageForContainerRockyLinux(buildDir,stageDir) 
+					gv.StageForContainer(buildDir,stageDir) 
 				}					
             }
         }
