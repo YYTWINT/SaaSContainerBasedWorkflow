@@ -1,5 +1,5 @@
-NXJT Translator - v2306
-JUN 13, 2023
+NXJT Translator - v2312
+OCT 26, 2023
 ==========================================
 
 SECTION 1 - Release Information
@@ -16,7 +16,7 @@ SECTION 5 - Support
 
 SECTION 1 - Release Information
 
-This translator is based on NX2306 Phase 1700 binaries and doesn't contain any new functionality other than just supporting NX files created in NX2306.
+This translator is based on NX2312 Phase 1600 binaries and doesn't contain any new functionality other than just supporting NX files created in NX2312.
  
 NX to JT translator produces JT files for input part or assembly files.The translator is invoked
 through Linux console. User can provide single part that may be a piece part or assembly for translator 
@@ -49,9 +49,10 @@ Existing data model used by LCS needs to be enhanced in order to support these c
 SECTION 2 - Platforms and OS Supported
 
 LINUX:
+       - Rocky Linux
+				- Linux to be running on a minimum OS level of Rocky 8.8
+				- The Rocky Linux version should be updated with most recent security fixes and is recommended to run NXJT translator.
 
-	- CentOS Linux release 7.x
-		- Latest version of CentOS 7 updated with most recent security fixes is recommended to run NXJT translator.
 
 -------------------------------------------------------------------------
 
@@ -60,15 +61,15 @@ SECTION 3 - Installation Instructions and Usage
 	- Following Linux packages are prerequisites to run translator binaries -
 			fontconfig 
 			ksh
-			libgomp
+			libnsl
 			  
 	- Set following environment variables -
 			UGII_BASE_DIR=.../app                  ---> This is base directory containing translator binaries.
 			SPLM_LICENSE_SERVER=<License server>   ---> This is as per "Licensing" section below.
 		
 	- Sample docker file 
-			FROM centos:7
-			RUN yum update --assumeyes --skip-broken && yum install --assumeyes fontconfig ksh libgomp && yum clean all
+			FROM rockylinux:8.7
+			RUN yum update --assumeyes --skip-broken && yum install --assumeyes fontconfig ksh libnsl && yum clean all
 			WORKDIR /app
 			COPY nxbin/     /app/nxbin
 			COPY pvtrans/   /app/pvtrans
@@ -83,6 +84,7 @@ SECTION 3 - Installation Instructions and Usage
 			COPY nxjoin/   /app/nxjoin
 			COPY nxcoatings/   /app/nxcoatings
 
+            COPY run_nxtojt             /app/run_nxtojt
 			COPY run_ugtopv_vis         /app/run_ugtopv_vis
 			COPY tessUG_vis.config      /app/tessUG_vis.config
 			COPY run_ugtopv_multicad         /app/run_ugtopv_multicad
@@ -103,8 +105,18 @@ SECTION 3 - Installation Instructions and Usage
 						e.g. run_ugtopv_multicad  <xxx.prt>
  			 In this case, JT files will be generated at the location where input part is located.
  
+	- 3.3 Translator for generic usage
+ 			 This translator usage is for applications where they want to specify their own configuration file with required settings.
+ 			 "run_nxtojt" is the parent script and should be the entry point. It should be used as,
+						e.g., run_nxtojt  <xxx.prt> -config=<specify config file>
+						
+ 			 For this script, user has to specify the configuration file using "-config" command line option. If the configuration file is not explicitly specified, translator 
+			 will use the default configuration which may not contain required settings for SaaS workflow.
+			 
+			 Depending on workflow, it is recommended to use configuration files (tessUG_multicad.config/tessUG_vis.config) provided with base package.
+
 	- If user wants to output JT files at specified location, provide an argrument as,
-      e.g. run_ugtopv_xxx -force_output_dir=<output folder location>
+		e.g. run_ugtopv_xxx -force_output_dir=<output folder location>
 		
 	- By default Log files will be created at location specified by UGII_TMP_DIR variable.
 	  If it is not set, Log files will be generated at /var/tmp
@@ -117,7 +129,7 @@ SECTION 4 - Licensing
  			https://support.sw.siemens.com/en-US/product/1586485382/downloads
 	- If you already configred Siemens License Server version 2.1 or later, you can use same License Server setup for this release.
  
-	- Please download the development license file compatible with NX2306.
+	- Please download the development license file compatible with NX2312.
 	  from https://license/lws/#licenses:main. You need to provide host ID of a license server to get a license file.
 	
 	- Starting in NX 2212, the license you receive from Siemens must be installed using the Siemens License Server installer	  
