@@ -52,6 +52,12 @@ chmod 0755 ${RUN_UGTOPV_VIS} || { exit 1;}
 echo "ENV SPLM_LICENSE_SERVER=29000@172.17.0.2" >> ${STAGE_DIR}/dockerfile
 echo " " >> ${STAGE_DIR}/dockerfile
 
+echo "RUN groupadd -r nodejs && useradd -r -g nodejs nodejs" >> ${STAGE_DIR}/dockerfile
+echo "RUN mkdir /home/nodejs" >> ${STAGE_DIR}/dockerfile
+echo "RUN chown -R nodejs /home/nodejs" >> ${STAGE_DIR}/dockerfile
+echo "USER nodejs" >> ${STAGE_DIR}/dockerfile
+echo " " >> ${STAGE_DIR}/dockerfile
+
 echo "COPY run_ugtopv_vis         /app/run_ugtopv_vis" >> ${STAGE_DIR}/dockerfile
 echo "COPY tessUG_vis.config      /app/tessUG_vis.config" >> ${STAGE_DIR}/dockerfile
 echo "COPY run_ugtopv_multicad         /app/run_ugtopv_multicad" >> ${STAGE_DIR}/dockerfile
