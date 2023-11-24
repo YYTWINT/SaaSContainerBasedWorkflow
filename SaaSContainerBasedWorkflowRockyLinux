@@ -142,7 +142,8 @@ pipeline {
 				}
 			steps {
 				script{
-					gv.RemoveRunningContainers() 
+					echo 'Docker removal'
+					//gv.RemoveRunningContainers() 
 				}					
 			}
 		}
