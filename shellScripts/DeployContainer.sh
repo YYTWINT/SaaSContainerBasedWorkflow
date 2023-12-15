@@ -24,8 +24,8 @@ then
 	orig=${RELEASE_IP}
 	releaseName=${orig//'.'/'_TranslatorWorker.'}
 	
-	cd ${STAGE_BASE_DIR} || { exit 1;}
-	tar -czf $releaseName.tar.gz TranslatorBinaries/ || { exit 1;}
+	cd ${STAGE_DIR} || { exit 1;}
+	tar -czf $releaseName.tar.gz * || { exit 1;}
 	echo "curl -u opentools_bot:YL6MtwZ35 -T $releaseName.tar.gz https://artifacts.industrysoftware.automation.siemens.com/artifactory/generic-local/Opentools/PREVIEW/NXtoJT/$releaseName/ || { exit 1;}"
 
 	echo "curl -u opentools_bot:YL6MtwZ35 -T NXJT_Translator_README.txt https://artifacts.industrysoftware.automation.siemens.com/artifactory/generic-local/Opentools/PREVIEW/NXtoJT/$releaseName/ || { exit 1;}"
