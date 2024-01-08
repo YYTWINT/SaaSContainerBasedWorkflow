@@ -32,3 +32,4 @@ then
 	fi
 else
 	/usr/site/devop_tools/bin/unit add -b -p @${SeriesName} -t DEV -w SUB ${UNIT_PATH} -R y -O y -DO_LINK_OPT y
+fi
