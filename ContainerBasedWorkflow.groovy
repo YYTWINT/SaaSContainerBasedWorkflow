@@ -4,7 +4,7 @@ def CreateUnit(String buildDir)
 	script{		
 		def unitFullPath="${buildDir}"
 		sh "chmod +x ./shellScripts/CreateUnit.sh "
-		sh "./shellScripts/CreateUnit.sh ${params.NXRelease} ${unitFullPath} ${params.HC}"		
+		sh "./shellScripts/CreateUnit.sh ${params.NXRelease} ${unitFullPath} ${params.HC} ${params.SeriesBuild} ${params.SeriesName}"		
 	}
 }
 
