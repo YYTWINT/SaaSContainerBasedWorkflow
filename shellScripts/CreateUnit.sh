@@ -4,7 +4,7 @@ if [ $# -ne 5 ]
 then
 	echo "CreateUnit.sh called with incorrect number of arguments."
 	echo "CreateUnit.sh <NXVersion> <UnitPath> <HCflag> <SeriesFlag> <SeriesName>"
-	echo "For example; CreateUnit.sh nx2206.latest /plm/pnnas/ppic/users/<unit_name> <false/true> <false/true> nx2312Series.3000"
+	echo "For example; CreateUnit.sh nx2206.latest /plm/pnnas/ppic/users/<unit_name> <false/true> <false/true> nx2312_Series.3000"
 	exit 1
 fi
 
@@ -31,5 +31,6 @@ then
 		sed -i 's/DO_DLL_COMPARISON.*/DO_DLL_COMPARISON       1/g' $initFile
 	fi
 else
-	/usr/site/devop_tools/bin/unit add -b -p @${SeriesName} -t DEV -w SUB ${UNIT_PATH} -R y -O y -DO_LINK_OPT y
+	/usr/site/devop_tools/UDU/tools/bin/unx/udistrib -s -u -t /apps/local_distrib/${SeriesName}/ -p "lnx64" -v @${SeriesName} -L 1 -A
+	/usr/site/devop_tools/bin/unit add -p /apps/local_distrib/${SeriesName} ${UNIT_PATH}
 fi
