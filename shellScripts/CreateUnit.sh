@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $# -ne 3 ] 
+if [ $# -ne 5 ] 
 then
 	echo "CreateUnit.sh called with incorrect number of arguments."
 	echo "CreateUnit.sh <NXVersion> <UnitPath> <HCflag> <SeriesFlag> <SeriesName>"
