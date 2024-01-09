@@ -31,6 +31,8 @@ then
 		sed -i 's/DO_DLL_COMPARISON.*/DO_DLL_COMPARISON       1/g' $initFile
 	fi
 else
-	/usr/site/devop_tools/UDU/tools/bin/unx/udistrib -s -u -t /apps/local_distrib/${SeriesName}/ -p "lnx64" -v @${SeriesName} -L 1 -A
-	/usr/site/devop_tools/bin/unit add -p /apps/local_distrib/${SeriesName} ${UNIT_PATH}
+	/usr/site/devop_tools/UDU/tools/bin/unx/udistrib -s -u -t /apps/local_distrib/${SeriesName}/ -p "common lnx64" -v @NX::${SeriesName} -L 1 -A
+	/usr/site/devop_tools/bin/unit add -p /apps/local_distrib/${SeriesName}/${SeriesName/_Series/} ${UNIT_PATH}
+	#C:\apps\devop_tools\UDU\tools\bin\wnt\runme.bat C:\apps\devop_tools\UDU\tools\udistrib.pl  -v "@NX::NX2312_Series.3000" -p "common lnx64 " -C -s -u -L 1 -t "C:\workdir\delete"
+
 fi
