@@ -62,10 +62,10 @@ echo "COPY run_nxtojt         /app/run_nxtojt" >> ${STAGE_DIR}/dockerfile
 echo "COPY tessUG_multicad.config      /app/tessUG_multicad.config" >> ${STAGE_DIR}/dockerfile
 echo " " >> ${STAGE_DIR}/dockerfile
 
-echo "RUN groupadd -r nodejs && useradd -r -g nodejs nodejs" >> ${STAGE_DIR}/dockerfile
-echo "RUN mkdir /home/nodejs" >> ${STAGE_DIR}/dockerfile
-echo "RUN chown -R nodejs /home/nodejs" >> ${STAGE_DIR}/dockerfile
-echo "USER nodejs" >> ${STAGE_DIR}/dockerfile
+#echo "RUN groupadd -r nodejs && useradd -r -g nodejs nodejs" >> ${STAGE_DIR}/dockerfile
+#echo "RUN mkdir /home/nodejs" >> ${STAGE_DIR}/dockerfile
+#echo "RUN chown -R nodejs /home/nodejs" >> ${STAGE_DIR}/dockerfile
+#echo "USER nodejs" >> ${STAGE_DIR}/dockerfile
 
 echo " " >> ${STAGE_DIR}/dockerfile
 echo " " >> ${STAGE_DIR}/dockerfile
