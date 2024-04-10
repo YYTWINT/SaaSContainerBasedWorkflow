@@ -22,7 +22,7 @@ docker build -t trx22:$NX_RELEASE $STAGE_DIR -f $STAGE_DIR/dockerfile || { exit 
 docker run --name nxjt_testrun_container -v /apps/JenkinsBase/docker:/volume --cpus="1" --memory="2g" trx22:$NX_RELEASE
 
 #Now check for error in /volume/Logs/log.txt file
-LOG_FILE=/workdir/JenkinsBase/docker/Logs/log_pass.txt
+LOG_FILE=/apps/JenkinsBase/docker/Logs/log_pass.txt
 errorCount=0
 
 echo "Checking case for pass condition"
@@ -45,7 +45,26 @@ else
 	exit 1
 fi
 
-LOG_FILE=/workdir/JenkinsBase/docker/Logs/log_fail.txt
+# Initialize a counter for non-zero lines
+non_zero_lines=0
+
+# Read each line of the file
+while IFS= read -r line; do
+    # Extract the value after the last ':'
+    value=$(echo "$line" | awk -F':' '{print $NF}')
+    
+    # Check if the value is non-zero
+    if [ "$value" -ne 0 ]; then
+        # Increment the counter
+        non_zero_lines=$((non_zero_lines + 1))
+    fi
+done < "$LOG_FILE"
+
+# Output the result
+echo "Number of lines with non-zero value after the last ':' is: $non_zero_lines"
+
+
+LOG_FILE=/apps/JenkinsBase/docker/Logs/log_fail.txt
 errorCount=0
 
 echo "Checking case for fail condition"
