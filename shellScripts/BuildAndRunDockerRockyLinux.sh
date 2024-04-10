@@ -45,25 +45,6 @@ else
 	exit 1
 fi
 
-# Initialize a counter for non-zero lines
-non_zero_lines=0
-
-# Read each line of the file
-while IFS= read -r line; do
-    # Extract the value after the last ':'
-    value=$(echo "$line" | awk -F':' '{print $NF}')
-    
-    # Check if the value is non-zero
-    if [ "$value" -ne 0 ]; then
-        # Increment the counter
-        non_zero_lines=$((non_zero_lines + 1))
-    fi
-done < "$LOG_FILE"
-
-# Output the result
-echo "Number of lines with non-zero value after the last ':' is: $non_zero_lines"
-
-
 LOG_FILE=/apps/JenkinsBase/docker/Logs/log_fail.txt
 errorCount=0
 

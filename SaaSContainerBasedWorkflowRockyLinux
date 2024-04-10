@@ -76,7 +76,7 @@ pipeline {
             steps {
 				script{
 					echo "docker test"
-					//gv.TestUnit(buildDir) 
+					gv.TestUnit(buildDir) 
 				}					
             }
         }
