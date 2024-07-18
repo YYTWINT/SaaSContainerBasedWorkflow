@@ -1,41 +1,126 @@
-pipeline {
-    agent any
-    parameters {
-        string(name: 'NXRelease', defaultValue: 'nx2412.latest', description: 'Use the latest IP from NX2412 release to create the build.')
-        booleanParam(name: 'SeriesBuild', defaultValue: false, description: 'Enable SeriesRelease when Series release build is required ')
-        string(name: 'SeriesName', defaultValue: '0', description: 'Provide the Series name for which you want to build the pipeline. series name format should be like "NX2412_Series.3000".')
-        string(name: 'UnitPath', defaultValue: '/apps/JenkinsBase/units/Dev', description: 'Path where build unit for the run is to be created.')
-        string(name: 'StagePath', defaultValue: '/apps/JenkinsBase/stage/Dev', description: 'Path where translator worker kits are to be staged.')
-        booleanParam(name: 'HC', defaultValue: false, description: 'Enable horizontal collaboration change package ')
-        string(name: 'CPNumber', defaultValue: '0', description: 'CP number on top of NXRelease against which build and test steps to be executed.')
-        booleanParam(name: 'Deploy', defaultValue: false, description: 'Deploy staging directory contents to customer setup')
+import javax.mail.*
+import javax.mail.internet.*
+import javax.activation.*
+import groovy.json.JsonOutput
+
+def readCredentials(String filePath) {
+    def file = new File(filePath)
+    if (!file.exists()) {
+        throw new FileNotFoundException("Credentials file not found: ${filePath}")
     }
-    stages {
-        stage('Init') {
-            steps {
-                script {
-                    gv = load "ContainerBasedWorkflow.groovy"
-                    emailHandle = load "email.groovy"
-                    buildDir = "${params.UnitPath}/${params.NXRelease}_TranslatorWorker_${env.BUILD_TIMESTAMP}"
-                    stageDir = "${params.StagePath}/${params.NXRelease}_TranslatorWorker_${env.BUILD_TIMESTAMP}"
-                    NXReleaseVersion = "${params.NXRelease}"
-                    HCFlag = "${params.HC}"
-                    SeriesFlag = "${params.SeriesBuild}"
-                }
-            }
-        }
+    def lines = file.readLines()
+    if (lines.size() < 2) {
+        throw new IllegalArgumentException("Invalid credentials file format. Expected two lines with username and password.")
     }
-    post {
-        success {
-            echo 'All tasks completed successfully.'
+    return [lines[0], lines[1]]
+}
+
+def sendEmail(String buildDir, String stageDir, String platformName) {
+    def smtpServer = 'smtp.siemens.com'
+    def smtpPort = 587
+    def username, password
+	(username, password) = readCredentials('/plm/pnnas/jtdev/yyjtadmn_only/credentials.txt')
+    
+
+    def CPNum = params.CPNumber ?: "NA"
+    def subject = "Job Executed '${env.JOB_NAME} - [${env.BUILD_NUMBER}] - ${currentBuild.currentResult}'"
+    def details = """
+        Hi team; <br>
+        Please see details of latest build as below: <br><br>
+        
+        <style type="text/css">
+        .tg  {border-collapse:collapse;border-color:#9ABAD9;border-spacing:0;}
+        .tg td{background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:1px;color:#444;
+          font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;}
+        .tg th{background-color:#409cff;border-color:#9ABAD9;border-style:solid;border-width:1px;color:#fff;
+          font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+        .tg .tg-hmp3{background-color:#D2E4FC;text-align:left;vertical-align:top}
+        .tg .tg-0lax{text-align:left;vertical-align:top}
+        .tg .tg-ur59{border-color:#343434;text-align:left;vertical-align:top}
+        </style>
+
+        <table class="tg">
+        <thead>
+          <tr>
+            <th class="tg-0lax">Build paramter</th>
+            <th class="tg-0lax">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="tg-hmp3">Job</td>
+            <td class="tg-hmp3">${env.JOB_NAME}</td>
+          </tr>
+          <tr>
+            <td class="tg-0lax">Build number</td>
+            <td class="tg-ur59">${env.BUILD_NUMBER}</td>
+          </tr>
+          <tr>
+            <td class="tg-hmp3">NX Release</td>
+            <td class="tg-hmp3">${params.NXRelease}</td>
+          </tr>
+          <tr>
+            <td class="tg-0lax">CP#</td>
+            <td class="tg-ur59">${CPNum}</td>
+          </tr>
+          <tr>
+            <td class="tg-0lax">Unit path</td>
+            <td class="tg-ur59">${buildDir}</td>
+          </tr>
+          <tr>
+            <td class="tg-hmp3">Stage path</td>
+            <td class="tg-hmp3">${stageDir}</td>
+          </tr>
+          <tr>
+            <td class="tg-0lax">Customer</td>
+            <td class="tg-ur59">${params.Customer}</td>
+          </tr>
+          <tr>
+            <td class="tg-hmp3">Deploy flag</td>
+            <td class="tg-hmp3">${params.Deploy}</td>
+          </tr>
+          <tr>
+            <td class="tg-0lax">Status</td>
+            <td class="tg-ur59">${currentBuild.currentResult}</td>
+          </tr>
+          <tr>
+            <td class="tg-hmp3">Job log details</td>
+            <td class="tg-hmp3"><a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></td>
+          </tr>
+        </tbody>
+        </table>
+        
+        <br><br>
+        Regards; <br>
+        YYTWINT
+    """
+
+    Properties props = new Properties()
+    props.put("mail.smtp.auth", "true")
+    props.put("mail.smtp.starttls.enable", "true")
+    props.put("mail.smtp.host", smtpServer)
+    props.put("mail.smtp.port", smtpPort.toString())
+
+    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(username, password)
         }
-        failure {
-            echo 'One or more stages have failed.'
-        }
-        always {
-            script {
-                emailHandle.sendEmail(buildDir, stageDir, 'linux')
-            }
-        }
+    })
+
+    try {
+        MimeMessage msg = new MimeMessage(session)
+        msg.setFrom(new InternetAddress('yytwint.sisw@siemens.com'))
+        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse('nilesh.lakhotia@siemens.com,dattaprasad.sonawadekar@siemens.com,rakesh.thakur@siemens.com,roma.mohapatra@siemens.com'))
+        msg.setSubject(subject)
+        msg.setContent(details, "text/html; charset=utf-8")
+
+        Transport.send(msg)
+        println('Email sent successfully.')
+    } catch (AuthenticationFailedException e) {
+        println('Failed to authenticate with the SMTP server. Check your username and password.')
+    } catch (MessagingException e) {
+        println("Failed to send email: ${e.message}")
     }
 }
+
+return this
