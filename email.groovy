@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     gv = load "ContainerBasedWorkflow.groovy"
-                    emailHandle = load "sendEmail.groovy"
+                    emailHandle = load "email.groovy"
                     buildDir = "${params.UnitPath}/${params.NXRelease}_TranslatorWorker_${env.BUILD_TIMESTAMP}"
                     stageDir = "${params.StagePath}/${params.NXRelease}_TranslatorWorker_${env.BUILD_TIMESTAMP}"
                     NXReleaseVersion = "${params.NXRelease}"
