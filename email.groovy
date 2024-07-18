@@ -19,10 +19,8 @@ def sendEmail(String buildDir, String stageDir, String platformName) {
     def smtpServer = 'smtp.siemens.com'
     def smtpPort = 587
     def username, password
-	(username, password) = readCredentials('/plm/pnnas/jtdev/yyjtadmn_only/credentials.txt')
+    (username, password) = readCredentials('/plm/pnnas/jtdev/yyjtadmn_only/credentials.txt')
     
-
-    def CPNum = params.CPNumber ?: "NA"
     def subject = "Job Executed"
     def details = """
         Hi team; <br>
