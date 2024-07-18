@@ -16,7 +16,7 @@ def readCredentials(String filePath) {
 }
 
 def sendEmail(String buildDir, String stageDir, String platformName) {
-    def smtpServer = 'smtp.test.com'
+    def smtpServer = 'smtp.siemens.com'
     def smtpPort = 587
     def username, password
 	(username, password) = readCredentials('/plm/pnnas/jtdev/yyjtadmn_only/credentials.txt')
