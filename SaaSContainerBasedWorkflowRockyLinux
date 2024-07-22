@@ -39,6 +39,7 @@ pipeline {
                     if (("${params.HC}" == "false") || ("${params.HC}" == "true" && ("${CP}" != "0"))) {
                         if (("${params.SeriesBuild}" == "false") || ("${params.SeriesBuild}" == "true" && ("${params.SeriesName}" != "0"))) {
                             echo 'linux create'
+							gv.CreateUnit(buildDir)
                             BUILD_PROCESS_FLAG = true
                         } else {
                             error "You have selected Series Build option but Series name is not specified correctly so skipping Group build and testing!"
