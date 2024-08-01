@@ -8,14 +8,13 @@ def STAGE_AGENT = 'SAAS_di2inpun2631lv0_yytwint'
 def boolean anyFailure = false
 
 pipeline {
-    //agent any
     parameters {
         string(name: 'NXRelease', defaultValue: 'nx2412.latest', description: 'Use the latest IP from NX2412 release to create the build.')
-        booleanParam(name: 'SeriesBuild', defaultValue: false, description: 'Enable SeriesRelease when Series release build is required ')
+        booleanParam(name: 'SeriesBuild', defaultValue: false, description: 'Enable SeriesRelease when Series release build is required')
         string(name: 'SeriesName', defaultValue: '0', description: 'Provide the Series name for which you want to build the pipeline. series name format should be like "NX2412_Series.3000".')
         string(name: 'UnitPath', defaultValue: '/apps/JenkinsBase/units/Dev', description: 'Path where build unit for the run is to be created.')
         string(name: 'StagePath', defaultValue: '/apps/JenkinsBase/stage/Dev', description: 'Path where translator worker kits are to be staged.')
-        booleanParam(name: 'HC', defaultValue: false, description: 'Enable horizontal collaboration change package ')
+        booleanParam(name: 'HC', defaultValue: false, description: 'Enable horizontal collaboration change package')
         string(name: 'CPNumber', defaultValue: '0', description: 'CP number on top of NXRelease against which build and test steps to be executed.')
         booleanParam(name: 'Deploy', defaultValue: false, description: 'Deploy staging directory contents to customer setup')
     }
@@ -23,6 +22,7 @@ pipeline {
         stage('Init') {
             steps {
                 script {
+                    // Load shared scripts and initialize directories
                     gv = load "ContainerBasedWorkflow.groovy"
                     emailHandle = load "email.groovy"
                     buildDir = "${params.UnitPath}/${params.NXRelease}_TranslatorWorker_${BUILD_TIMESTAMP}"
@@ -35,18 +35,18 @@ pipeline {
             agent { label "${BUILD_AGENT}" }
             steps {
                 script {
-                    def CP = "${params.CPNumber}"
-                    if (("${params.HC}" == "false") || ("${params.HC}" == "true" && ("${CP}" != "0"))) {
-                        if (("${params.SeriesBuild}" == "false") || ("${params.SeriesBuild}" == "true" && ("${params.SeriesName}" != "0"))) {
-                            echo 'linux create'
-							gv.CreateUnit(buildDir)
+                    def CP = params.CPNumber
+                    if (!params.HC || (params.HC && CP != "0")) {
+                        if (!params.SeriesBuild || (params.SeriesBuild && params.SeriesName != "0")) {
+                            echo 'Creating unit...'
+                            gv.CreateUnit(buildDir)
                             BUILD_PROCESS_FLAG = true
                         } else {
-                            error "You have selected Series Build option but Series name is not specified correctly so skipping Group build and testing!"
+                            error "Series Build option selected but Series name is not specified correctly. Skipping Group build and testing!"
                             BUILD_PROCESS_FLAG = false
                         }
                     } else {
-                        error "You have selected HC option but CP number is not specified correctly so skipping Group build and testing!"
+                        error "HC option selected but CP number is not specified correctly. Skipping Group build and testing!"
                         BUILD_PROCESS_FLAG = false
                     }
                 }
@@ -56,7 +56,7 @@ pipeline {
         stage('BuildUnit') {
             agent { label "${BUILD_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 script {
@@ -68,11 +68,11 @@ pipeline {
         stage('TestUnit') {
             agent { label "${TEST_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 script {
-                    echo "docker test"
+                    echo "Running docker tests..."
                     gv.TestUnit(buildDir)
                 }
             }
@@ -81,7 +81,7 @@ pipeline {
         stage('StageForContainer') {
             agent { label "${STAGE_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 script {
@@ -93,7 +93,7 @@ pipeline {
         stage('CheckLicenseServer') {
             agent { label "${STAGE_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 script {
@@ -105,7 +105,7 @@ pipeline {
         stage('RemoveRunningContainers-Pre') {
             agent { label "${STAGE_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 script {
@@ -117,7 +117,7 @@ pipeline {
         stage('BuildAndRunDocker') {
             agent { label "${STAGE_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 script {
@@ -134,7 +134,7 @@ pipeline {
         stage('DockerCleanup') {
             agent { label "${STAGE_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
@@ -148,7 +148,7 @@ pipeline {
         stage('RemoveRunningContainers-Post') {
             agent { label "${STAGE_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 script {
@@ -160,7 +160,7 @@ pipeline {
         stage('DeployContainer') {
             agent { label "${STAGE_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 script {
@@ -172,12 +172,12 @@ pipeline {
         stage('Purge Unit') {
             agent { label "${BUILD_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 script {
-                    if (anyFailure == false) {
-                        gv.Purge("${params.UnitPath}")
+                    if (!anyFailure) {
+                        gv.Purge(params.UnitPath)
                     } else {
                         echo "Skipping Purge Unit due to earlier failure"
                     }
@@ -188,12 +188,12 @@ pipeline {
         stage('Purge Stage') {
             agent { label "${STAGE_AGENT}" }
             when {
-                expression { "${BUILD_PROCESS_FLAG}" == "true" }
+                expression { BUILD_PROCESS_FLAG }
             }
             steps {
                 script {
-                    if (anyFailure == false) {
-                        gv.Purge("${params.StagePath}")
+                    if (!anyFailure) {
+                        gv.Purge(params.StagePath)
                     } else {
                         echo "Skipping Purge Stage due to earlier failure"
                     }
@@ -204,7 +204,7 @@ pipeline {
         stage('Evaluate Status') {
             steps {
                 script {
-                    if (anyFailure == true) {
+                    if (anyFailure) {
                         currentBuild.result = 'FAILURE'
                         currentBuild.buildResult = 'FAILURE'
                     }
