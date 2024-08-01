@@ -1,5 +1,6 @@
+def BUILD_AGENT = 'SAAS_di2inpun2630lv0_yytwint'
 pipeline {
-    agent any
+    agent { label "${BUILD_AGENT}" }
 
     stages {
         stage('Checkout') {
