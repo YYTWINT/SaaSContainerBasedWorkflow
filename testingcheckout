@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: '*/main']], 
+                          doGenerateSubmoduleConfigurations: false, 
+                          extensions: [], 
+                          userRemoteConfigs: [[url: 'https://github.com/YYTWINT/SaaSContainerBasedWorkflow.git']]
+                         ])
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                // Add your build steps here
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                echo "Current workspace content:"
+                sh "ls -la ${workspace}"
+            }
+        }
+    }
+}
