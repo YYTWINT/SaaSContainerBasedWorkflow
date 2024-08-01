@@ -8,6 +8,8 @@ def STAGE_AGENT = 'SAAS_di2inpun2631lv0_yytwint'
 def boolean anyFailure = false
 
 pipeline {
+    agent { label "${BUILD_AGENT}" } // Define the default agent here
+
     parameters {
         string(name: 'NXRelease', defaultValue: 'nx2412.latest', description: 'Use the latest IP from NX2412 release to create the build.')
         booleanParam(name: 'SeriesBuild', defaultValue: false, description: 'Enable SeriesRelease when Series release build is required')
@@ -18,6 +20,7 @@ pipeline {
         string(name: 'CPNumber', defaultValue: '0', description: 'CP number on top of NXRelease against which build and test steps to be executed.')
         booleanParam(name: 'Deploy', defaultValue: false, description: 'Deploy staging directory contents to customer setup')
     }
+
     stages {
         stage('Init') {
             steps {
@@ -30,7 +33,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('CreateUnit') {
             agent { label "${BUILD_AGENT}" }
             steps {
@@ -52,7 +55,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('BuildUnit') {
             agent { label "${BUILD_AGENT}" }
             when {
@@ -64,7 +67,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('TestUnit') {
             agent { label "${TEST_AGENT}" }
             when {
@@ -77,7 +80,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('StageForContainer') {
             agent { label "${STAGE_AGENT}" }
             when {
@@ -89,7 +92,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('CheckLicenseServer') {
             agent { label "${STAGE_AGENT}" }
             when {
@@ -101,7 +104,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('RemoveRunningContainers-Pre') {
             agent { label "${STAGE_AGENT}" }
             when {
@@ -113,7 +116,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('BuildAndRunDocker') {
             agent { label "${STAGE_AGENT}" }
             when {
@@ -130,7 +133,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('DockerCleanup') {
             agent { label "${STAGE_AGENT}" }
             when {
@@ -144,7 +147,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('RemoveRunningContainers-Post') {
             agent { label "${STAGE_AGENT}" }
             when {
@@ -156,7 +159,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('DeployContainer') {
             agent { label "${STAGE_AGENT}" }
             when {
@@ -168,7 +171,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Purge Unit') {
             agent { label "${BUILD_AGENT}" }
             when {
@@ -184,7 +187,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Purge Stage') {
             agent { label "${STAGE_AGENT}" }
             when {
@@ -200,19 +203,18 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Evaluate Status') {
             steps {
                 script {
                     if (anyFailure) {
                         currentBuild.result = 'FAILURE'
-                        currentBuild.buildResult = 'FAILURE'
                     }
                 }
             }
         }
     }
-    
+
     post {
         success {
             echo 'All tasks completed successfully.'
