@@ -88,7 +88,8 @@ pipeline {
             }
             steps {
                 script {
-                    gv.StageForContainer(buildDir, stageDir)
+					echo "stag for container..."
+                    //gv.StageForContainer(buildDir, stageDir)
                 }
             }
         }
@@ -100,7 +101,8 @@ pipeline {
             }
             steps {
                 script {
-                    gv.CheckLicenseServer()
+                    echo "check license server..."
+					//gv.CheckLicenseServer()
                 }
             }
         }
@@ -112,7 +114,8 @@ pipeline {
             }
             steps {
                 script {
-                    gv.RemoveRunningContainers()
+                    echo "remove running container..."
+					gv.RemoveRunningContainers()
                 }
             }
         }
@@ -124,12 +127,13 @@ pipeline {
             }
             steps {
                 script {
-                    try {
-                        gv.BuildAndRunDockerRockyLinux(buildDir, stageDir)
-                    } catch (Exception e) {
-                        echo 'Exception occurred: ' + e.toString()
-                        anyFailure = true
-                    }
+					echo "BuildAndRunDocker..."
+                    //try {
+                    //    gv.BuildAndRunDockerRockyLinux(buildDir, stageDir)
+                    //} catch (Exception e) {
+                    //    echo 'Exception occurred: ' + e.toString()
+                    //    anyFailure = true
+                    //}
                 }
             }
         }
@@ -142,7 +146,8 @@ pipeline {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        gv.DockerCleanup(stageDir)
+                        echo "Docker cleanup..."
+						//gv.DockerCleanup(stageDir)
                     }
                 }
             }
@@ -155,7 +160,8 @@ pipeline {
             }
             steps {
                 script {
-                    gv.RemoveRunningContainers()
+					echo "RemoveRunningContainers..."
+                    //gv.RemoveRunningContainers()
                 }
             }
         }
@@ -167,7 +173,8 @@ pipeline {
             }
             steps {
                 script {
-                    gv.DeployContainer(buildDir, stageDir)
+					echo "deploy Containers..."
+                    //gv.DeployContainer(buildDir, stageDir)
                 }
             }
         }
