@@ -11,9 +11,9 @@ pipeline {
     agent { label "${BUILD_AGENT}" } // Define the default agent here
 
     parameters {
-        string(name: 'NXRelease', defaultValue: 'nx2412.latest', description: 'Use the latest IP from NX2412 release to create the build.')
+        string(name: 'NXRelease', defaultValue: 'nx2506.latest', description: 'Use the latest IP from NX2506 release to create the build.')
         booleanParam(name: 'SeriesBuild', defaultValue: false, description: 'Enable SeriesRelease when Series release build is required')
-        string(name: 'SeriesName', defaultValue: '0', description: 'Provide the Series name for which you want to build the pipeline. series name format should be like "NX2412_Series.3000".')
+        string(name: 'SeriesName', defaultValue: '0', description: 'Provide the Series name for which you want to build the pipeline. series name format should be like "NX2506_Series.3000".')
         string(name: 'UnitPath', defaultValue: '/apps/JenkinsBase/units/Dev', description: 'Path where build unit for the run is to be created.')
         string(name: 'StagePath', defaultValue: '/apps/JenkinsBase/stage/Dev', description: 'Path where translator worker kits are to be staged.')
         booleanParam(name: 'HC', defaultValue: false, description: 'Enable horizontal collaboration change package')
