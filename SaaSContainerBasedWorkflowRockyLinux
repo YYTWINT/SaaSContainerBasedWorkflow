@@ -89,7 +89,7 @@ pipeline {
             steps {
                 script {
 					echo "stag for container..."
-                    gv.StageForContainer(buildDir, stageDir)
+                   // gv.StageForContainer(buildDir, stageDir)
                 }
             }
         }
@@ -102,7 +102,7 @@ pipeline {
             steps {
                 script {
                     echo "check license server..."
-					gv.CheckLicenseServer()
+					//gv.CheckLicenseServer()
                 }
             }
         }
@@ -115,7 +115,7 @@ pipeline {
             steps {
                 script {
                     echo "remove running container..."
-					gv.RemoveRunningContainers()
+					//gv.RemoveRunningContainers()
                 }
             }
         }
@@ -128,12 +128,12 @@ pipeline {
             steps {
                 script {
 					echo "BuildAndRunDocker..."
-                    try {
-                        gv.BuildAndRunDockerRockyLinux(buildDir, stageDir)
-                    } catch (Exception e) {
-                        echo 'Exception occurred: ' + e.toString()
-                        anyFailure = true
-                    }
+                   // try {
+                   //     gv.BuildAndRunDockerRockyLinux(buildDir, stageDir)
+                   // } catch (Exception e) {
+                   //     echo 'Exception occurred: ' + e.toString()
+                   //     anyFailure = true
+                   // }
                 }
             }
         }
@@ -147,7 +147,7 @@ pipeline {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
                         echo "Docker cleanup..."
-						gv.DockerCleanup(stageDir)
+						//gv.DockerCleanup(stageDir)
                     }
                 }
             }
@@ -161,7 +161,7 @@ pipeline {
             steps {
                 script {
 					echo "RemoveRunningContainers..."
-                    gv.RemoveRunningContainers()
+                    //gv.RemoveRunningContainers()
                 }
             }
         }
@@ -174,7 +174,7 @@ pipeline {
             steps {
                 script {
 					echo "deploy Containers..."
-                    gv.DeployContainer(buildDir, stageDir)
+                    //gv.DeployContainer(buildDir, stageDir)
                 }
             }
         }
