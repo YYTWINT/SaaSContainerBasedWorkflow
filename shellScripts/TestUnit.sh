@@ -28,7 +28,7 @@ export SPLM_LICENSE_SERVER=29000@pnnxflex3:29000@pnnxflex4
 mv "${UNIT_PATH}/dt" "${UNIT_PATH}/dt_nxjt"
 mv "${UNIT_PATH}/athena" "${UNIT_PATH}/athena_nxjt"
 
-/usr/site/devop_tools/bin/unit run ${UNIT_PATH} devtest runtest cae.rep:CaeJtSaaS.set -keep -local
+/usr/site/devop_tools/bin/unit run ${UNIT_PATH} devtest runtest cae.rep:CaeJtSaas_Case0001.seq -keep -local
 casesFailed=`grep "Number of tests:" ${UNIT_PATH}/dt/runs/devtestLastRunFails.txt | cut -d ":" -f2 | tr -d " "`
 if [ $casesFailed != 0 ]
 then
