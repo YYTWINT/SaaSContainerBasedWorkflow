@@ -31,7 +31,7 @@ then
 		sed -i 's/DO_DLL_COMPARISON.*/DO_DLL_COMPARISON       1/g' $initFile
 	fi
 else
-    if [ ! -d "/apps/local_distrib/${SeriesName}" ] && [ ! -e "/apps/local_distrib/${SeriesName}/${SeriesName/_Series/}/init.def" ]; then
+    if [ ! -d "/apps/JenkinsBase/local_distrib/${SeriesName}" ] && [ ! -e "/apps/JenkinsBase/local_distrib/${SeriesName}/${SeriesName/_Series/}/init.def" ]; then
         /usr/site/devop_tools/UDU/tools/bin/unx/udistrib -s -u -t /apps/JenkinsBase/local_distrib/${SeriesName}/ -p "common lnx64" -v @NX::${SeriesName} -L 1 -A
     fi
     /usr/site/devop_tools/bin/unit add -p /apps/JenkinsBase/local_distrib/${SeriesName}/${SeriesName/_Series/} ${UNIT_PATH}
