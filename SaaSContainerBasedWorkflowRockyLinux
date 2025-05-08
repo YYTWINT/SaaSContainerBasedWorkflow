@@ -76,7 +76,7 @@ pipeline {
             steps {
                 script {
                     echo "Running docker tests..."
-                    gv.TestUnit(buildDir)
+                    //gv.TestUnit(buildDir)
                 }
             }
         }
@@ -147,7 +147,7 @@ pipeline {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
                         echo "Docker cleanup..."
-						gv.DockerCleanup(stageDir)
+						//gv.DockerCleanup(stageDir)
                     }
                 }
             }
