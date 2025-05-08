@@ -3,7 +3,7 @@ def emailHandle
 def buildDir
 def stageDir
 def BUILD_AGENT = 'SAAS_di2inpun2630lv0_yytwint'
-def TEST_AGENT = 'SAAS_di2inpun2631lv0_yytwint'
+def TEST_AGENT = 'SAAS_di2inpun0050lv0_yytwint_build'
 def STAGE_AGENT = 'SAAS_di2inpun2631lv0_yytwint'
 def boolean anyFailure = false
 
