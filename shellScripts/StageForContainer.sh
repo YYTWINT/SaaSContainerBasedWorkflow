@@ -53,6 +53,28 @@ chmod 0755 ${RUN_CAETOJT} || { exit 1;}
 
 # IP 10.146.116.128 is a flex licenser server IP
 # echo "ENV SPLM_LICENSE_SERVER=29000@10.146.116.128" >> ${STAGE_DIR}/dockerfile 
+# Replace old base image and yum install block if present
+DOCKERFILE_PATH="${STAGE_DIR}/dockerfile"
+if grep -q "^FROM rockylinux:8.7 as base" "$DOCKERFILE_PATH"; then
+    awk '
+    BEGIN { in_block = 0 }
+    /^FROM rockylinux:8.7 as base/ {
+        in_block = 1
+        print "FROM rockylinux:9.5-minimal as base"
+        print ""
+        print "RUN microdnf install -y dnf && \\"
+        print "    dnf -y --setopt=tsflags=nodocs --nobest update && \\"
+        print "    dnf -y --setopt=tsflags=nodocs --nobest install fontconfig ksh && \\"
+        print "    dnf install -y findutils && \\"
+        print "    dnf clean all"
+        next
+    }
+    in_block && /^RUN\s/ { next }
+    /^$/ && in_block { in_block = 0; next }
+    !in_block { print }
+    ' "$DOCKERFILE_PATH" > "${DOCKERFILE_PATH}.tmp" && mv "${DOCKERFILE_PATH}.tmp" "$DOCKERFILE_PATH"
+    echo "Dockerfile base image and install commands updated."
+fi
 
 # IP 172.17.0.2 is a saltd container IP
 echo "ENV SPLM_LICENSE_SERVER=29000@172.17.0.2" >> ${STAGE_DIR}/dockerfile
