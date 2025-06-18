@@ -82,6 +82,14 @@ def BuildAndRunDockerRockyLinux(String buildDir, String stageDir)
 	}
 }
 
+def ValidateDockerTest()
+{
+	echo "Executing ValidateDockerTest..."
+	
+	sh "chmod +x ./shellScripts/ValidateDockerTest.sh "
+	sh "./shellScripts/ValidateDockerTest.sh"
+}
+
 def DockerCleanup(String stageDir)
 {
 	echo "Executing DockerCleanup..."

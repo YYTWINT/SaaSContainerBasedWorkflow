@@ -140,7 +140,20 @@ pipeline {
                 }
             }
         }
-
+		stage('ValidateDockerTest') {
+            agent { label "${STAGE_AGENT}" }
+            steps {
+                script{
+                    try{
+                        gv.ValidateDockerTest()
+                    }
+                    catch (Exception e) {
+                        echo 'Exception occurred: ' + e.toString()
+                        anyFailure = true
+                    }
+                }
+            }
+        }
         stage('DockerCleanup') {
             agent { label "${STAGE_AGENT}" }
             when {
