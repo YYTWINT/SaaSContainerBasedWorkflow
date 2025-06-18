@@ -54,7 +54,7 @@ chmod 0755 ${RUN_CAETOJT} || { exit 1;}
 # IP 10.146.116.128 is a flex licenser server IP
 # echo "ENV SPLM_LICENSE_SERVER=29000@10.146.116.128" >> ${STAGE_DIR}/dockerfile 
 # IP 172.17.0.2 is a saltd container IP
-sed -i '/microdnf install --assumeyes fontconfig ksh/a\    microdnf install -y findutils && /a\' ${STAGE_DIR}/dockerfile
+sed -i '/microdnf install --assumeyes fontconfig ksh && \\/a\    microdnf install -y findutils && \\' ${STAGE_DIR}/dockerfile
 echo "ENV SPLM_LICENSE_SERVER=29000@172.17.0.2" >> ${STAGE_DIR}/dockerfile
 echo " " >> ${STAGE_DIR}/dockerfile
 
