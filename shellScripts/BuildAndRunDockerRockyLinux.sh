@@ -19,7 +19,7 @@ NX_RELEASE=${stringarray[1]}
 
 docker pull rockylinux/rockylinux:9.5-minimal
 
-docker tag rockylinux/rockylinux: 9.5-minimal rockylinux: 9.5-minimal
+docker tag rockylinux/rockylinux:9.5-minimal rockylinux:9.5-minimal
 	
 docker build -t trx22:$NX_RELEASE $STAGE_DIR -f $STAGE_DIR/dockerfile || { exit 1;} 
 
