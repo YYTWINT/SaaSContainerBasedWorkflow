@@ -1,15 +1,5 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]
-then
-        echo "ValidateDockerTest.sh called with incorrect number of arguments."
-        echo "ValidateDockerTest.sh <productName>"
-        echo "For example; ValidateDockerTest.sh <Step>"
-        exit 1
-fi
-
-PRODUCT_NAME=$1
-
 TEST="/volume/Results"
 GOLD="/volume/Gold"
 
