@@ -4,7 +4,7 @@ TEST="/volume/Results"
 GOLD="/volume/Gold"
 
 # Run JTCompare inside Docker and capture the result
-docker exec jtcompare_container /bin/bash /volume/JTCompare_1.0.2/runcompare.sh "${GOLD}" "${TEST}"
+docker exec jtcompare_container /bin/bash /volume/docker/JTCompare_1.0.2/runcompare.sh "${GOLD}" "${TEST}"
 RESULT=$?
 
 if [ $RESULT -ne 0 ]; then
