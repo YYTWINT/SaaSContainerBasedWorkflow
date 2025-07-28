@@ -3,7 +3,7 @@
 # Environment setup function
 SetUpEnvironment() {
     export LC_ALL="en_US.utf8"
-    export SPLM_LICENSE_SERVER="/volume/jtcompare/License/ugslmd_license.lic"
+    export SPLM_LICENSE_SERVER="29000@10.146.116.128"
     export JT_COMPARE_INSTALL="/volume/jtcompare/JTCompare_1.0.2"
 }
 
