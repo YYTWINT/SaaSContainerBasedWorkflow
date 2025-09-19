@@ -163,7 +163,7 @@ pipeline {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
                         echo "Docker cleanup..."
-						//gv.DockerCleanup(stageDir)
+						gv.DockerCleanup(stageDir)
                     }
                 }
             }
